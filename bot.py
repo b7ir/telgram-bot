@@ -11,7 +11,7 @@ import threading
 
 token = os.getenv("BOT_TOKEN") 
 ADMIN_ID = 7598650992
-CHANNEL = '@EgyCodes'
+CHANNEL = '@onestore6'
 ADMINS = [7598650992]
 token = os.getenv("BOT_TOKEN")
 PHONE_NUMBER = "076788"
