@@ -9,7 +9,7 @@ import random
 import time
 import threading
 
- token = os.getenv("BOT_TOKEN")#توكن بوتك
+token = os.getenv("BOT_TOKEN") 
 ADMIN_ID = 7598650992
 CHANNEL = '@EgyCodes'
 ADMINS = [7598650992]
