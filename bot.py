@@ -13,7 +13,7 @@ token = os.getenv("BOT_TOKEN")
 ADMIN_ID = 7598650992
 CHANNEL = '@EgyCodes'
 ADMINS = [7598650992]
-API_TOKEN = "04ed9b84257860f2fc6c51b0f425df0c"
+token = os.getenv("BOT_TOKEN")
 PHONE_NUMBER = "076788"
 
 bot = telebot.TeleBot(token)
