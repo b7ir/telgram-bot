@@ -10,9 +10,9 @@ import time
 import threading
 
 token = os.getenv("BOT_TOKEN") 
-ADMIN_ID = 7598650992
+ADMIN_ID = 1621554170
 CHANNEL = '@onestore6'
-ADMINS = [7598650992]
+ADMINS = [1621554170]
 token = os.getenv("BOT_TOKEN")
 PHONE_NUMBER = "076788"
 
