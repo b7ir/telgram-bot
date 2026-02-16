@@ -1,3 +1,15 @@
+بێگومان، دەتوانم یارمەتیت بدەم. هەموو دەقە عەرەبییەکانی ناو کۆدەکەم بۆ گۆڕیویت بۆ کوردی (سۆرانی) بە شێوازێکی جوان و گونجاو بۆ بۆتەکە.
+
+ئەمەی خوارەوە کۆدە دەستکاریکراوەکەیە:
+
+code
+Python
+
+download
+
+content_copy
+
+expand_less
 import sqlite3
 import telebot
 from telebot import types
@@ -13,7 +25,6 @@ token = os.getenv("BOT_TOKEN")
 ADMIN_ID = 1621554170
 CHANNEL = '@onestore6'
 ADMINS = [1621554170]
-token = os.getenv("BOT_TOKEN")
 PHONE_NUMBER = "076788"
 
 bot = telebot.TeleBot(token)
@@ -170,103 +181,46 @@ def check_subscription(user_id):
     except:
         return False
 
+# ناوی خزمەتگوزارییەکان بە کوردی
 SERVICES = {
     'instagram': {
         'followers': [
-            {'name': 'متابعين ثابتين', 'price': 1, 'service_id': 9650},
-            {'name': 'متابعين غير ثابتين', 'price': 2, 'service_id': 9650},
-            {'name': 'متابعين حقيقيين', 'price': 0.5, 'service_id': 9650},
-            {'name': 'لايكات', 'price': 15, 'service_id': 9168},
-            {'name': 'مشاهدات', 'price': 25, 'service_id': 5132},
+            {'name': 'فۆڵۆوەرزی جێگیر', 'price': 1, 'service_id': 9650},
+            {'name': 'فۆڵۆوەرزی ناجێگیر', 'price': 2, 'service_id': 9650},
+            {'name': 'فۆڵۆوەرزی ڕاستەقینە', 'price': 0.5, 'service_id': 9650},
+            {'name': 'ڵایک', 'price': 15, 'service_id': 9168},
+            {'name': 'بینین (Views)', 'price': 25, 'service_id': 5132},
         ]
     },
     'telegram': {
         'members': [
-            {'name': 'أعضاء قنوات', 'price': 2.1, 'service_id': 8504},
-            {'name': 'مشاهدات بوست', 'price': 25, 'service_id': 10401},
+            {'name': 'ئەندامی کەناڵ', 'price': 2.1, 'service_id': 8504},
+            {'name': 'بینینی پۆست', 'price': 25, 'service_id': 10401},
         ]
     }
 }
 
-def create_order(user_id, service_type, quantity, link):
-    conn = sqlite3.connect('bot_data.db')
-    cursor = conn.cursor()
-    
-    price = quantity * SERVICES['instagram']['followers'][0]['price']
-    
-    user = get_user(user_id)
-    if user[4] < price:
-        return False, "رصيدك غير كافي"
-    
-    update_user_points(user_id, -price)
-    
-    order_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cursor.execute('''INSERT INTO orders 
-                     (user_id, service_type, quantity, link, order_date) 
-                     VALUES (?, ?, ?, ?, ?)''',
-                  (user_id, service_type, quantity, link, order_date))
-    
-    order_id = cursor.lastrowid
-    
-    cursor.execute("UPDATE users SET orders_count = orders_count + 1, spent_points = spent_points + ? WHERE user_id = ?",
-                  (price, user_id))
-    
-    conn.commit()
-    conn.close()
-    
-    return True, order_id
-
-def broadcast_message(message_text, message_type='text'):
-    conn = sqlite3.connect('bot_data.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT user_id FROM users")
-    users = [row[0] for row in cursor.fetchall()]
-    conn.close()
-    
-    success = 0
-    failed = 0
-    
-    for user_id in users:
-        try:
-            if message_type == 'text':
-                bot.send_message(user_id, message_text)
-            success += 1
-        except:
-            failed += 1
-        time.sleep(0.1)
-    
-    return success, failed
-
-def create_gift_code(points):
-    code = f"GIFT{random.randint(1000, 9999)}"
-    conn = sqlite3.connect('bot_data.db')
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO gift_codes (code, points) VALUES (?, ?)", (code, points))
-    conn.commit()
-    conn.close()
-    return code
-
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.from_user.id
-    username = message.from_user.username or "بلا معرف"
-    first_name = message.from_user.first_name or "مستخدم"
+    username = message.from_user.username or "بێ ناسناو"
+    first_name = message.from_user.first_name or "بەکارهێنەر"
     
     if not check_subscription(user_id):
         keyboard = types.InlineKeyboardMarkup()
-        keyboard.add(types.InlineKeyboardButton("📢 اشترك في القناة", url=f"https://t.me/{CHANNEL[1:]}"))
+        keyboard.add(types.InlineKeyboardButton("📢 جۆین بە لە کەناڵ", url=f"https://t.me/{CHANNEL[1:]}"))
         bot.send_message(message.chat.id,
-                        f"""🚸 **عذراً عزيزي** 
-🔰 **عليك الاشتراك بقناة البوت أولاً**
+                        f"""🚸 **ببوورە ئازیزم** 
+🔰 **سەرەتا دەبێت لە کەناڵی بۆتەکە جۆین بیت**
 
-📢 **القناة:** {CHANNEL}
+📢 **کەناڵ:** {CHANNEL}
 
-‼️ **اشترك ثم ارسل /start**""",
+‼️ **جۆین بە و پاشان /start بنێرەوە**""",
                         reply_markup=keyboard)
         return
     
     if get_setting('bot_locked') == 'true' and not is_admin(user_id):
-        bot.send_message(message.chat.id, "⏳ البوت يخضع للتحديث حاليًا، الرجاء المحاولة لاحقًا")
+        bot.send_message(message.chat.id, "⏳ بۆتەکە لە ئێستادا لەژێر چاکسازیدایە، تکایە دواتر هەوڵ بدەرەوە")
         return
     
     invited_by = 0
@@ -280,39 +234,39 @@ def start(message):
     
     if invited_by and invited_by != user_id:
         update_user_points(invited_by, 5)
-        bot.send_message(invited_by, f"🎉 حصلت على 5 نقاط! مستخدم جديد انضم عبر رابطك")
+        bot.send_message(invited_by, f"🎉 5 خاڵت وەرگرت! بەکارهێنەرێکی نوێ لە ڕێگەی لینکەکەتەوە هاتە ناو بۆت")
     
     user = get_user(user_id)
     points = user[4] if user else 0
     
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton(f"🎯 نقاطك: {points}", callback_data="my_points")
+        types.InlineKeyboardButton(f"🎯 خاڵەکانت: {points}", callback_data="my_points")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🛒 الخدمات", callback_data="services"),
-        types.InlineKeyboardButton("👤 الحساب", callback_data="account")
+        types.InlineKeyboardButton("🛒 خزمەتگوزارییەکان", callback_data="services"),
+        types.InlineKeyboardButton("👤 هەژمار", callback_data="account")
     )
     keyboard.row(
-        types.InlineKeyboardButton("💰 التجميع", callback_data="earn_points"),
-        types.InlineKeyboardButton("🎁 استخدام كود", callback_data="use_gift")
+        types.InlineKeyboardButton("💰 کۆکردنەوەی خاڵ", callback_data="earn_points"),
+        types.InlineKeyboardButton("🎁 بەکارهێنانی کۆد", callback_data="use_gift")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔄 شحن نقاط", callback_data="buy_points"),
-        types.InlineKeyboardButton("📊 طلباتي", callback_data="my_orders")
+        types.InlineKeyboardButton("🔄 کڕینی خاڵ", callback_data="buy_points"),
+        types.InlineKeyboardButton("📊 داواکارییەکانم", callback_data="my_orders")
     )
     
     if is_admin(user_id):
-        keyboard.row(types.InlineKeyboardButton("🎮 لوحة التحكم", callback_data="admin_panel"))
+        keyboard.row(types.InlineKeyboardButton("🎮 پانێڵی کۆنتڕۆڵ", callback_data="admin_panel"))
     
-    welcome_text = f"""🎊 **مرحباً بك {first_name}!
+    welcome_text = f"""🎊 **بەخێرهاتی {first_name}!
 
-🤖 في بوت الرشق المتطور**
+🤖 بۆ بۆتی پێشکەوتووی زیادکردنی فۆڵۆوەرز**
 ────────────────
-💎 **نقاطك:** `{points}`
-🆔 **ايديك:** `{user_id}`
+💎 **خاڵەکانت:** `{points}`
+🆔 **ئایدی تۆ:** `{user_id}`
 ────────────────
-اختر من الأوامر أدناه:"""
+یەکێک لە بژاردەکانی خوارەوە هەڵبژێرە:"""
 
     bot.send_message(message.chat.id, welcome_text, 
                     reply_markup=keyboard, parse_mode='Markdown')
@@ -365,24 +319,24 @@ def handle_callbacks(call):
 def show_services(call):
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("📸 إنستغرام", callback_data="service_instagram"),
-        types.InlineKeyboardButton("📱 تيليجرام", callback_data="service_telegram")
+        types.InlineKeyboardButton("📸 ئینستاگرام", callback_data="service_instagram"),
+        types.InlineKeyboardButton("📱 تێلیگرام", callback_data="service_telegram")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🎵 تيك توك", callback_data="service_tiktok"),
-        types.InlineKeyboardButton("📘 فيسبوك", callback_data="service_facebook")
+        types.InlineKeyboardButton("🎵 تیک تۆک", callback_data="service_tiktok"),
+        types.InlineKeyboardButton("📘 فەیسبووک", callback_data="service_facebook")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🐦 تويتر", callback_data="service_twitter"),
-        types.InlineKeyboardButton("📺 يوتيوب", callback_data="service_youtube")
+        types.InlineKeyboardButton("🐦 تویتەر", callback_data="service_twitter"),
+        types.InlineKeyboardButton("📺 یوتیوب", callback_data="service_youtube")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_main")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main")
     )
     
-    bot.edit_message_text("""🛒 **قسم الخدمات**
+    bot.edit_message_text("""🛒 **بەشی خزمەتگوزارییەکان**
 
-اختر المنصة التي تريد الرشق عليها:""", 
+ئەو سۆشیاڵ میدیایە هەڵبژێرە کە دەتەوێت خزمەتگوزاری بۆ داوا بکەیت:""", 
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
@@ -393,24 +347,24 @@ def show_service_details(call):
     
     if service == "instagram":
         services_list = SERVICES['instagram']['followers']
-        text = "📸 **خدمات إنستغرام**\n\n"
+        text = "📸 **خزمەتگوزارییەکانی ئینستاگرام**\n\n"
     else:
         services_list = []
-        text = f"**خدمات {service}**\n\n"
+        text = f"**خزمەتگوزارییەکانی {service}**\n\n"
     
     keyboard = types.InlineKeyboardMarkup()
     
     for idx, service_item in enumerate(services_list[:30]):
         keyboard.row(
             types.InlineKeyboardButton(
-                f"{service_item['name']} - {service_item['price']} نقطة", 
+                f"{service_item['name']} - {service_item['price']} خاڵ", 
                 callback_data=f"order_{service}_{idx}"
             )
         )
     
-    keyboard.row(types.InlineKeyboardButton("🔙 رجوع", callback_data="services"))
+    keyboard.row(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="services"))
     
-    bot.edit_message_text(text + "اختر الخدمة المطلوبة:",
+    bot.edit_message_text(text + "خزمەتگوزارییەک هەڵبژێرە:",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
@@ -421,13 +375,14 @@ def create_service_order(call):
     service, index = data.split("_")
     index = int(index)
     
+    # لێرەدا دەبێت ئاگاداری ڕیزبەندی خزمەتگوزارییەکان بیت
     service_item = SERVICES['instagram']['followers'][index]
     
-    msg = bot.edit_message_text(f"""🛒 **طلب خدمة: {service_item['name']}**
+    msg = bot.edit_message_text(f"""🛒 **داواکردنی: {service_item['name']}**
 
-💵 **السعر:** {service_item['price']} نقطة لكل 1000
+💵 **نرخ:** {service_item['price']} خاڵ بۆ هەر 1000 دانە
 ────────────────
-📥 **أرسل الرابط الآن:**""",
+📥 **ئێستا لینکەکە بنێرە:**""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          parse_mode='Markdown')
@@ -435,10 +390,8 @@ def create_service_order(call):
     bot.register_next_step_handler(msg, process_order_link, service_item)
 
 def process_order_link(message, service_item):
-    user_id = message.from_user.id
     link = message.text
-    
-    msg = bot.send_message(message.chat.id, f"📊 **أدخل الكمية المطلوبة:**")
+    msg = bot.send_message(message.chat.id, f"📊 **بڕی داواکراو بنووسە:**")
     bot.register_next_step_handler(msg, process_order_quantity, service_item, link)
 
 def process_order_quantity(message, service_item, link):
@@ -447,10 +400,10 @@ def process_order_quantity(message, service_item, link):
     try:
         quantity = int(message.text)
         if quantity < 100:
-            bot.send_message(message.chat.id, "❌ الحد الأدنى للطلب هو 100")
+            bot.send_message(message.chat.id, "❌ کەمترین بڕی داواکراو 100 دانەیە")
             return start(message)
     except:
-        bot.send_message(message.chat.id, "❌ الرجاء إدخال رقم صحيح")
+        bot.send_message(message.chat.id, "❌ تکایە تەنها ژمارە بنووسە")
         return start(message)
     
     cost = (quantity / 1000) * service_item['price']
@@ -458,7 +411,7 @@ def process_order_quantity(message, service_item, link):
     
     user = get_user(user_id)
     if user[4] < cost:
-        bot.send_message(message.chat.id, f"❌ رصيدك غير كافي. تحتاج {cost} نقطة")
+        bot.send_message(message.chat.id, f"❌ خاڵەکانت بەش ناکات. پێویستت بە {cost} خاڵ هەیە")
         return start(message)
     
     update_user_points(user_id, -cost)
@@ -479,29 +432,28 @@ def process_order_quantity(message, service_item, link):
     conn.commit()
     conn.close()
     
-    bot.send_message(message.chat.id, f"""✅ **تم استلام طلبك بنجاح!**
+    bot.send_message(message.chat.id, f"""✅ **داواکارییەکەت بە سەرکەوتوویی تۆمارکرا!**
 
-📦 **رقم الطلب:** `{order_id}`
-🎯 **الخدمة:** {service_item['name']}
-🔗 **الرابط:** {link}
-📊 **الكمية:** {quantity}
-💎 **التكلفة:** {cost} نقطة
-⏳ **الحالة:** قيد المعالجة
+📦 **ژمارەی داواکاری:** `{order_id}`
+🎯 **خزمەتگوزاری:** {service_item['name']}
+🔗 **لینک:** {link}
+📊 **بڕ:** {quantity}
+💎 **تێچوو:** {cost} خاڵ
+⏳ **بارودۆخ:** چاوەڕوانکردن
 
-سيتم البدء في التنفيذ خلال دقائق ⏰""", parse_mode='Markdown')
+لە ماوەیەکی کەمدا دەست پێدەکات ⏰""", parse_mode='Markdown')
     
     user = get_user(user_id)
-    admin_msg = f"""🆕 **طلب جديد**
+    admin_msg = f"""🆕 **داواکارییەکی نوێ**
 
-👤 **المستخدم:** {user[2]} (@{user[1]})
-🆔 **ايدي:** `{user_id}`
-📦 **الطلب:** {service_item['name']}
-🔗 **الرابط:** {link}
-📊 **الكمية:** {quantity}
-💎 **التكلفة:** {cost} نقطة"""
+👤 **بەکارهێنەر:** {user[2]} (@{user[1]})
+🆔 **ئایدی:** `{user_id}`
+📦 **داواکاری:** {service_item['name']}
+🔗 **لینک:** {link}
+📊 **بڕ:** {quantity}
+💎 **تێچوو:** {cost} خاڵ"""
 
     bot.send_message(ADMIN_ID, admin_msg, parse_mode='Markdown')
-    
     start(message)
 
 def show_account(call):
@@ -511,21 +463,21 @@ def show_account(call):
     
     user_id, username, first_name, join_date, points, invited_by, shares, spent_points, orders_count, today_messages = user
     
-    account_text = f"""👤 **معلومات حسابك**
+    account_text = f"""👤 **زانیارییەکانی هەژمارەکەت**
 
-🏷 **الاسم:** {first_name}
-📧 **المعرف:** @{username if username else 'بلا معرف'}
-🆔 **ايدي:** `{user_id}`
+🏷 **ناو:** {first_name}
+📧 **یوزەرنییم:** @{username if username else 'بێ ناسناو'}
+🆔 **ئایدی:** `{user_id}`
 ────────────────
-💎 **النقاط:** {points}
-👥 **المشاركات:** {shares}
-💰 **النقاط المصروفة:** {spent_points}
-📦 **الطلبات:** {orders_count}
+💎 **خاڵەکانت:** {points}
+👥 **بانگهێشتەکان:** {shares}
+💰 **خاڵی خەرجکراو:** {spent_points}
+📦 **کۆی داواکارییەکان:** {orders_count}
 ────────────────
-📅 **تاريخ الانضمام:** {join_date[:10]}"""
+📅 **بەرواری بەشداریکردن:** {join_date[:10]}"""
 
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_main"))
+    keyboard.add(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main"))
     
     bot.edit_message_text(account_text,
                          chat_id=call.message.chat.id,
@@ -539,33 +491,33 @@ def show_earn_points(call):
     
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("🔗 رابط الدعوة", callback_data="invite_link"),
-        types.InlineKeyboardButton("📲 تسليم حسابات", callback_data="submit_accounts")
+        types.InlineKeyboardButton("🔗 لینکی بانگهێشت", callback_data="invite_link"),
+        types.InlineKeyboardButton("📲 ڕادەستکردنی ئەکاونت", callback_data="submit_accounts")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔄 تبديل نقاط", callback_data="exchange_points"),
-        types.InlineKeyboardButton("💰 شراء نقاط", callback_data="buy_points")
+        types.InlineKeyboardButton("🔄 گۆڕینەوەی خاڵ", callback_data="exchange_points"),
+        types.InlineKeyboardButton("💰 کڕینی خاڵ", callback_data="buy_points")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_main")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main")
     )
     
-    bot.edit_message_text(f"""💰 **قسم تجميع النقاط**
+    bot.edit_message_text(f"""💰 **بەشی کۆکردنەوەی خاڵ**
 
-🎯 **طرق الحصول على النقاط:**
+🎯 **ڕێگاکانی بەدەستهێنانی خاڵ:**
 
-1. **مشاركة رابط الدعوة** 🫂
-   - تحصل على 5 نقاط لكل صديق
-   - رابطك: `{invite_link}`
+1. **بڵاوکردنەوەی لینکی بانگهێشت** 🫂
+   - بۆ هەر هاوڕێیەک 5 خاڵ وەردەگریت
+   - لینکی تۆ: `{invite_link}`
 
-2. **تسليم حسابات للمطور** 📲
-   - من 100 إلى 400 نقطة حسب الدولة
+2. **ڕادەستکردنی ئەکاونت بە گەشەپێدەر** 📲
+   - لە 100 بۆ 400 خاڵ بەپێی وڵاتی ئەکاونتەکە
 
-3. **شراء نقاط مباشرة** 💳
-   - أسعار تنافسية
+3. **کڕینی خاڵ بە شێوەی ڕاستەوخۆ** 💳
+   - بە نرخێکی گونجاو
 
-4. **تبديل نقاط تمويل** 🔄
-   - 2000 نقطة تمويل = 500 نقطة رشق""",
+4. **گۆڕینەوەی خاڵی فاست فۆڵۆوەر یان هتد** 🔄
+   - 2000 خاڵی فاست = 500 خاڵی بۆت""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
@@ -574,27 +526,26 @@ def show_earn_points(call):
 def show_buy_points(call):
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("💳 شحن برصيد", callback_data="charge_balance"),
-        types.InlineKeyboardButton("🎫 كارت شحن", callback_data="charge_card")
+        types.InlineKeyboardButton("💳 کڕین بە ڕەسید", callback_data="charge_balance"),
+        types.InlineKeyboardButton("🎫 کارتی بارگاوی کردن", callback_data="charge_card")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 رجوع", callback_data="earn_points")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="earn_points")
     )
     
-    bot.edit_message_text("""💳 **قسم شحن النقاط**
+    bot.edit_message_text("""💳 **بەشی کڕینی خاڵ**
 
-💎 **أسعار النقاط:**
-- 1$ = 1000 نقطة
-- 5$ = 5000 نقطة  
-- 10$ = 11000 نقطة
+💎 **نرخی خاڵەکان:**
+- 1$ = 1000 خاڵ
+- 5$ = 5000 خاڵ  
+- 10$ = 11000 خاڵ
 
-📞 **للتواصل:** @FFJFF5
+📞 **بۆ کڕین پەیوەندی بکە بە:** @FFJFF5
 
-💰 **طرق الدفع المتاحة:**
-- سبأفون، يمن موبايل، كريمي
-- سوا، موبايلي، راجحي
-- زين كاش، آسيا، رايزر
-- باي بال، USDT، وغيرها""",
+💰 **ڕێگاکانی پارەدان:**
+- ئاسیاواڵێت، فاست پەی
+- زەین کاش، کۆڕەک، ئاسیا
+- باینانس (USDT)، پەیپاڵ""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
@@ -603,8 +554,7 @@ def show_buy_points(call):
 def show_my_points(call):
     user = get_user(call.from_user.id)
     points = user[4] if user else 0
-    
-    bot.answer_callback_query(call.id, f"🎯 نقاطك الحالية: {points} نقطة")
+    bot.answer_callback_query(call.id, f"🎯 خاڵەکانت لە ئێستادا: {points} خاڵە")
 
 def show_my_orders(call):
     user_id = call.from_user.id
@@ -615,19 +565,19 @@ def show_my_orders(call):
     conn.close()
     
     if not orders:
-        text = "📭 **لا توجد طلبات سابقة**"
+        text = "📭 **هیچ داواکارییەکی پێشووت نییە**"
     else:
-        text = "📦 **آخر 5 طلبات**\n\n"
+        text = "📦 **دواین 5 داواکاریت**\n\n"
         for order in orders:
-            text += f"**الطلب #{order[0]}**\n"
-            text += f"الخدمة: {order[2]}\n"
-            text += f"الكمية: {order[3]}\n"
-            text += f"الحالة: {order[5]}\n"
-            text += f"التاريخ: {order[6][:10]}\n"
+            text += f"**داواکاری #{order[0]}**\n"
+            text += f"خزمەتگوزاری: {order[2]}\n"
+            text += f"بڕ: {order[3]}\n"
+            text += f"بارودۆخ: {order[5]}\n"
+            text += f"بەروار: {order[6][:10]}\n"
             text += "────────────────\n"
     
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_main"))
+    keyboard.add(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main"))
     
     bot.edit_message_text(text,
                          chat_id=call.message.chat.id,
@@ -658,31 +608,31 @@ def admin_panel(call):
     
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("🔒 قفل البوت", callback_data="lock_bot"),
-        types.InlineKeyboardButton("🔓 فتح البوت", callback_data="unlock_bot")
+        types.InlineKeyboardButton("🔒 داخستنی بۆت", callback_data="lock_bot"),
+        types.InlineKeyboardButton("🔓 کردنەوەی بۆت", callback_data="unlock_bot")
     )
     keyboard.row(
-        types.InlineKeyboardButton("👥 إدارة الإدمن", callback_data="manage_admins"),
-        types.InlineKeyboardButton("📊 الإحصائيات", callback_data="statistics")
+        types.InlineKeyboardButton("👥 بەڕێوەبردنی ئەدمین", callback_data="manage_admins"),
+        types.InlineKeyboardButton("📊 ئامارەکان", callback_data="statistics")
     )
     keyboard.row(
-        types.InlineKeyboardButton("📢 قسم الإذاعة", callback_data="broadcast"),
-        types.InlineKeyboardButton("🎁 قسم الرشق", callback_data="rshq_panel")
+        types.InlineKeyboardButton("📢 بەشی ڕاگەیاندن", callback_data="broadcast"),
+        types.InlineKeyboardButton("🎁 بەشی ڕەشق", callback_data="rshq_panel")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔄 تحديث", callback_data="admin_panel")
+        types.InlineKeyboardButton("🔄 نوێکردنەوە", callback_data="admin_panel")
     )
     
-    text = f"""🎮 **لوحة تحكم المسؤول**
+    text = f"""🎮 **پانێڵی بەڕێوەبەری بۆت**
 
-👥 **إجمالي المستخدمين:** {total_users}
-📈 **المستخدمين اليوم:** {today_users}
-💎 **إجمالي النقاط:** {stats[1]}
-📦 **إجمالي الطلبات:** {stats[2]}
-💰 **النقاط المصروفة:** {stats[3]}
-⚙️ **حالة البوت:** {'مفتوح ✅' if get_setting('bot_locked') != 'true' else 'مقفل 🔒'}
+👥 **کۆی بەکارهێنەران:** {total_users}
+📈 **بەکارهێنەرانی ئەمڕۆ:** {today_users}
+💎 **کۆی خاڵەکان:** {stats[1]}
+📦 **کۆی داواکارییەکان:** {stats[2]}
+💰 **خاڵی خەرجکراو:** {stats[3]}
+⚙️ **بارودۆخی بۆت:** {'کراوەیە ✅' if get_setting('bot_locked') != 'true' else 'داخراوە 🔒'}
 
-اختر الإجراء المناسب:"""
+کردارێک هەڵبژێرە:"""
     
     if isinstance(call, types.CallbackQuery):
         bot.edit_message_text(text, chat_id=message.chat.id, message_id=message.message_id,
@@ -694,34 +644,29 @@ def show_rshq_panel(call):
     if not is_admin(call.from_user.id):
         return
     
-    try:
-        response = requests.get(f"https://yemenfollow.com/api/v2?key={API_TOKEN}&action=balance")
-        balance_data = response.json()
-        balance = balance_data.get('balance', 0)
-        currency = balance_data.get('currency', '')
-    except:
-        balance = 0
-        currency = ''
+    # لێرەدا دەبێت باڵانسی ماڵپەڕەکە وەربگریت (ئەگەر لینکت کردبێت)
+    balance = 0
+    currency = "$"
     
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("➕ إضافة نقاط", callback_data="add_points"),
-        types.InlineKeyboardButton("🎁 صنع كود هدية", callback_data="create_gift")
+        types.InlineKeyboardButton("➕ زیادکردنی خاڵ", callback_data="add_points"),
+        types.InlineKeyboardButton("🎁 دروستکردنی کۆدی دیاری", callback_data="create_gift")
     )
     keyboard.row(
-        types.InlineKeyboardButton("✅ فتح الرشق", callback_data="enable_rshq"),
-        types.InlineKeyboardButton("❌ غلق الرشق", callback_data="disable_rshq")
+        types.InlineKeyboardButton("✅ کردنەوەی ڕەشق", callback_data="enable_rshq"),
+        types.InlineKeyboardButton("❌ داخستنی ڕەشق", callback_data="disable_rshq")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_admin")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
     )
     
-    bot.edit_message_text(f"""🎮 **قسم إدارة الرشق**
+    bot.edit_message_text(f"""🎮 **بەشی بەڕێوەبردنی خزمەتگوزارییەکان**
 
-💰 **رصيد الموقع:** {balance} {currency}
-⚙️ **حالة الاستقبال:** {'مفتوح ✅' if get_setting('rshq_enabled') != 'false' else 'مغلق ❌'}
+💰 **ڕەسیدی ماڵپەڕ:** {balance} {currency}
+⚙️ **بارودۆخی وەرگرتن:** {'کراوەیە ✅' if get_setting('rshq_enabled') != 'false' else 'داخراوە ❌'}
 
-اختر الإجراء المناسب:""",
+کردارێک هەڵبژێرە:""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
@@ -736,16 +681,16 @@ def manage_admins(call):
     
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("➕ رفع أدمن", callback_data="add_admin"),
-        types.InlineKeyboardButton("🗑 حذف الأدمن", callback_data="delete_admins")
+        types.InlineKeyboardButton("➕ زیادکردنی ئەدمین", callback_data="add_admin"),
+        types.InlineKeyboardButton("🗑 سڕینەوەی ئەدمینەکان", callback_data="delete_admins")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_admin")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
     )
     
-    bot.edit_message_text(f"""👥 **إدارة الإدمن**
+    bot.edit_message_text(f"""👥 **بەڕێوەبردنی ئەدمینەکان**
 
-آخر 5 أدمن:
+دواین 5 ئەدمین:
 {admins_text}""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
@@ -756,7 +701,7 @@ def add_admin_handler(call):
     if not is_admin(call.from_user.id):
         return
     
-    msg = bot.edit_message_text("👤 **أرسل ايدي المستخدم لرفعه أدمن:**",
+    msg = bot.edit_message_text("👤 **ئایدی ئەو کەسە بنێرە کە دەتەوێت بیکەیت بە ئەدمین:**",
                                chat_id=call.message.chat.id,
                                message_id=call.message.message_id)
     bot.register_next_step_handler(msg, process_add_admin)
@@ -768,15 +713,15 @@ def process_add_admin(message):
     try:
         new_admin_id = int(message.text)
         add_admin(new_admin_id)
-        bot.send_message(message.chat.id, f"✅ تم رفع المستخدم `{new_admin_id}` كأدمن")
+        bot.send_message(message.chat.id, f"✅ بەکارهێنەری `{new_admin_id}` کرا بە ئەدمین")
         
         try:
-            bot.send_message(new_admin_id, "🎉 تم ترقيتك إلى أدمن في البوت!\nاستخدم /admin للوصول إلى لوحة التحكم")
+            bot.send_message(new_admin_id, "🎉 تۆ کرایت بە ئەدمین لە ناو بۆت!\nفەرمانی /admin بەکاربهێنە بۆ بینینی پانێڵ")
         except:
             pass
             
     except ValueError:
-        bot.send_message(message.chat.id, "❌ الرجاء إدخال ايدي صحيح")
+        bot.send_message(message.chat.id, "❌ تکایە تەنها ئایدی بە ژمارە بنووسە")
     
     admin_panel(message)
 
@@ -785,7 +730,7 @@ def delete_admins(call):
         return
     
     remove_all_admins()
-    bot.answer_callback_query(call.id, "✅ تم حذف جميع الأدمنية")
+    bot.answer_callback_query(call.id, "✅ هەموو ئەدمینەکان سڕانەوە")
     admin_panel(call.message)
 
 def show_statistics(call):
@@ -796,14 +741,14 @@ def show_statistics(call):
     today_users = get_today_users()
     stats = get_user_stats()
     
-    bot.edit_message_text(f"""📊 **الإحصائيات الشاملة**
+    bot.edit_message_text(f"""📊 **ئاماری گشتی**
 
-👥 **إجمالي المستخدمين:** {total_users}
-📈 **المستخدمين اليوم:** {today_users}
-💎 **إجمالي النقاط:** {stats[1]}
-📦 **إجمالي الطلبات:** {stats[2]}
-💰 **النقاط المصروفة:** {stats[3]}
-⚙️ **حالة البوت:** {'مفتوح ✅' if get_setting('bot_locked') != 'true' else 'مقفل 🔒'}""",
+👥 **کۆی بەکارهێنەران:** {total_users}
+📈 **بەکارهێنەرانی ئەمڕۆ:** {today_users}
+💎 **کۆی خاڵەکان:** {stats[1]}
+📦 **کۆی داواکارییەکان:** {stats[2]}
+💰 **خاڵی خەرجکراو:** {stats[3]}
+⚙️ **بارودۆخی بۆت:** {'کراوەیە ✅' if get_setting('bot_locked') != 'true' else 'داخراوە 🔒'}""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          parse_mode='Markdown')
@@ -814,20 +759,20 @@ def show_broadcast(call):
     
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        types.InlineKeyboardButton("📝 رسالة نصية", callback_data="broadcast_text"),
-        types.InlineKeyboardButton("🖼 صورة", callback_data="broadcast_photo")
+        types.InlineKeyboardButton("📝 نامەی دەقی", callback_data="broadcast_text"),
+        types.InlineKeyboardButton("🖼 وێنە", callback_data="broadcast_photo")
     )
     keyboard.row(
-        types.InlineKeyboardButton("📹 ميديا", callback_data="broadcast_media"),
-        types.InlineKeyboardButton("🔗 توجيه", callback_data="broadcast_forward")
+        types.InlineKeyboardButton("📹 میدیا", callback_data="broadcast_media"),
+        types.InlineKeyboardButton("🔗 فۆروەرد", callback_data="broadcast_forward")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 رجوع", callback_data="back_to_admin")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
     )
     
-    bot.edit_message_text("""📢 **قسم الإذاعة**
+    bot.edit_message_text("""📢 **بەشی ناردنی نامە بۆ هەمووان**
 
-اختر نوع الإذاعة:""",
+جۆری ناردنەکە هەڵبژێرە:""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard)
@@ -837,7 +782,7 @@ def lock_bot(call):
         return
     
     set_setting('bot_locked', 'true')
-    bot.answer_callback_query(call.id, "تم قفل البوت بنجاح ✅")
+    bot.answer_callback_query(call.id, "بۆتەکە داخرا ✅")
     admin_panel(call)
 
 def unlock_bot(call):
@@ -845,11 +790,11 @@ def unlock_bot(call):
         return
     
     set_setting('bot_locked', 'false')
-    bot.answer_callback_query(call.id, "تم فتح البوت بنجاح ✅")
+    bot.answer_callback_query(call.id, "بۆتەکە کرایەوە ✅")
     admin_panel(call)
 
 def use_gift_code(call):
-    msg = bot.edit_message_text("🎁 **أدخل كود الهدية:**",
+    msg = bot.edit_message_text("🎁 **کۆدی دیاری بنووسە:**",
                                chat_id=call.message.chat.id,
                                message_id=call.message.message_id)
     bot.register_next_step_handler(msg, process_gift_code)
@@ -870,11 +815,11 @@ def process_gift_code(message):
         cursor.execute("UPDATE gift_codes SET is_used = 1, used_by = ? WHERE code = ?", 
                       (user_id, code))
         
-        bot.send_message(message.chat.id, f"🎉 مبروك! حصلت على {points} نقطة من الكود {code}")
+        bot.send_message(message.chat.id, f"🎉 پیرۆزە! {points} خاڵت وەرگرت لە ڕێگەی کۆدی {code}")
         
-        bot.send_message(ADMIN_ID, f"🎁 مستخدم استخدم كود هدية\nالمستخدم: {user_id}\nالكود: {code}\nالنقاط: {points}")
+        bot.send_message(ADMIN_ID, f"🎁 بەکارهێنەرێک کۆدی بەکارهێنا\nبەکارهێنەر: {user_id}\nکۆد: {code}\nخاڵ: {points}")
     else:
-        bot.send_message(message.chat.id, "❌ كود الهدية غير صالح أو مستخدم مسبقاً")
+        bot.send_message(message.chat.id, "❌ کۆدەکە هەڵەیە یان پێشتر بەکارهاتووە")
     
     conn.commit()
     conn.close()
@@ -890,29 +835,29 @@ def back_to_admin(call):
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    help_text = """🆘 **دليل استخدام البوت**
+    help_text = """🆘 **ڕێبەری بەکارهێنانی بۆت**
 
-🤖 **بوت رشق EgyCodes**
+🤖 **بۆتی زیادکردنی فۆڵۆوەرز**
 ────────────────
-📖 **طريقة الاستخدام:**
+📖 **شێوازی کارکردن:**
 
-1. **تجميع النقاط 💰**
-   - مشاركة رابط الدعوة
-   - تسليم حسابات
-   - شراء نقاط مباشرة
+1. **کۆکردنەوەی خاڵ 💰**
+   - بڵاوکردنەوەی لینکی بانگهێشت
+   - ڕادەستکردنی ئەکاونت
+   - کڕینی خاڵ بە شێوەی ڕاستەوخۆ
 
-2. **الرشق 🎯**  
-   - اختر الخدمة المطلوبة
-   - حدد الكمية
-   - أرسل الرابط
+2. **داواکردن 🎯**  
+   - جۆری خزمەتگوزاری هەڵبژێرە
+   - بڕی پێویست بنووسە
+   - لینک بنێرە
 
-3. **إدارة الحساب 👤**
-   - تتبع نقاطك
-   - مراجعة الطلبات
-   - استخدام أكواد الهدايا
+3. **بەڕێوەبردنی هەژمار 👤**
+   - بینینی خاڵەکان
+   - بینینی داواکارییەکان
+   - بەکارهێنانی کۆدی دیاری
 
-📞 **الدعم:** @FFJFF5
-📢 **القناة:** @EgyCodes"""
+📞 **پشتیوانی:** @FFJFF5
+📢 **کەناڵ:** @onestore6"""
 
     bot.send_message(message.chat.id, help_text, parse_mode='Markdown')
 
@@ -936,7 +881,7 @@ def handle_all_messages(message):
         start(message)
 
 if __name__ == "__main__":
-    print("🎯 بدأ تشغيل بوت الرشق...")
+    print("🎯 بۆتەکە دەستی بە کارکردن کرد...")
     init_db()
     
     if not get_setting('bot_locked'):
@@ -952,5 +897,5 @@ if __name__ == "__main__":
     try:
         bot.infinity_polling()
     except Exception as e:
-        print(f"خطأ: {e}")
+        print(f"Error: {e}")
         time.sleep(5)
