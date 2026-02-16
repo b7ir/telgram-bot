@@ -1,15 +1,4 @@
-بێگومان، دەتوانم یارمەتیت بدەم. هەموو دەقە عەرەبییەکانی ناو کۆدەکەم بۆ گۆڕیویت بۆ کوردی (سۆرانی) بە شێوازێکی جوان و گونجاو بۆ بۆتەکە.
 
-ئەمەی خوارەوە کۆدە دەستکاریکراوەکەیە:
-
-code
-Python
-
-download
-
-content_copy
-
-expand_less
 import sqlite3
 import telebot
 from telebot import types
