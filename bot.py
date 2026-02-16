@@ -606,7 +606,7 @@ def admin_panel(call):
     )
     keyboard.row(
         types.InlineKeyboardButton("📢 بەشی ڕاگەیاندن", callback_data="broadcast"),
-        types.InlineKeyboardButton("🎁 بەشی ڕەشق", callback_data="rshq_panel")
+        types.InlineKeyboardButton("🎁 بەشی دیاری", callback_data="rshq_panel")
     )
     keyboard.row(
         types.InlineKeyboardButton("🔄 نوێکردنەوە", callback_data="admin_panel")
@@ -845,7 +845,7 @@ def help_command(message):
    - بینینی داواکارییەکان
    - بەکارهێنانی کۆدی دیاری
 
-📞 **پشتیوانی:** @FFJFF5
+📞 **پشتیوانی:** @BradostZangana
 📢 **کەناڵ:** @onestore6"""
 
     bot.send_message(message.chat.id, help_text, parse_mode='Markdown')
