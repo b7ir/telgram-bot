@@ -282,12 +282,10 @@ def handle_callbacks(call):
         admin_panel(call)
     elif call.data == "rshq_panel":
         show_rshq_panel(call)
-    # --- لێرە دوگمە نوێیەکانمان زیاد کرد بۆ ئەوەی کار بکەن ---
     elif call.data == "add_points":
         add_points_handler(call)
     elif call.data == "create_gift":
         create_gift_handler(call)
-    # ----------------------------------------------------
     elif call.data == "manage_admins":
         manage_admins(call)
     elif call.data == "statistics":
@@ -303,9 +301,9 @@ def handle_callbacks(call):
     elif call.data == "delete_admins":
         delete_admins(call)
     elif call.data == "back_to_main":
-        back_to_main(call)
+        start(call.message)
     elif call.data == "back_to_admin":
-        back_to_admin(call)
+        admin_panel(call)
     elif call.data.startswith("service_"):
         show_service_details(call)
     elif call.data.startswith("order_"):
@@ -326,7 +324,7 @@ def show_services(call):
         types.InlineKeyboardButton("📺 یوتیوب", callback_data="service_youtube")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main")
+        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
     )
     
     bot.edit_message_text("""🛒 **بەشی خزمەتگوزارییەکان**
@@ -358,6 +356,7 @@ def show_service_details(call):
         )
     
     keyboard.row(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="services"))
+    keyboard.row(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
     bot.edit_message_text(text + "خزمەتگوزارییەک هەڵبژێرە:",
                          chat_id=call.message.chat.id,
@@ -370,7 +369,6 @@ def create_service_order(call):
     service, index = data.split("_")
     index = int(index)
     
-    # لێرەدا دەبێت ئاگاداری ڕیزبەندی خزمەتگوزارییەکان بیت
     service_item = SERVICES['instagram']['followers'][index]
     
     msg = bot.edit_message_text(f"""🛒 **داواکردنی: {service_item['name']}**
@@ -472,7 +470,7 @@ def show_account(call):
 📅 **بەرواری بەشداریکردن:** {join_date[:10]}"""
 
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main"))
+    keyboard.add(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
     bot.edit_message_text(account_text,
                          chat_id=call.message.chat.id,
@@ -494,7 +492,7 @@ def show_earn_points(call):
         types.InlineKeyboardButton("💰 کڕینی خاڵ", callback_data="buy_points")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main")
+        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
     )
     
     bot.edit_message_text(f"""💰 **بەشی کۆکردنەوەی خاڵ**
@@ -525,7 +523,7 @@ def show_buy_points(call):
         types.InlineKeyboardButton("🎫 کارتی بارگاوی کردن", callback_data="charge_card")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="earn_points")
+        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
     )
     
     bot.edit_message_text("""💳 **بەشی کڕینی خاڵ**
@@ -572,7 +570,7 @@ def show_my_orders(call):
             text += "────────────────\n"
     
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_main"))
+    keyboard.add(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
     bot.edit_message_text(text,
                          chat_id=call.message.chat.id,
@@ -615,6 +613,7 @@ def admin_panel(call):
         types.InlineKeyboardButton("🎁 بەشی دیاری", callback_data="rshq_panel")
     )
     keyboard.row(
+        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"),
         types.InlineKeyboardButton("🔄 نوێکردنەوە", callback_data="admin_panel")
     )
     
@@ -639,7 +638,6 @@ def show_rshq_panel(call):
     if not is_admin(call.from_user.id):
         return
     
-    # لێرەدا دەبێت باڵانسی ماڵپەڕەکە وەربگریت (ئەگەر لینکت کردبێت)
     balance = 0
     currency = "$"
     
@@ -655,6 +653,7 @@ def show_rshq_panel(call):
     keyboard.row(
         types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
     )
+    keyboard.row(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
     bot.edit_message_text(f"""🎮 **بەشی بەڕێوەبردنی خزمەتگوزارییەکان**
 
@@ -667,7 +666,6 @@ def show_rshq_panel(call):
                          reply_markup=keyboard,
                          parse_mode='Markdown')
 
-# --- فەنکشنەکانی زیادکراو بۆ زیادکردنی خاڵ و دروستکردنی کۆد (Fix) ---
 def add_points_handler(call):
     if not is_admin(call.from_user.id): return
     msg = bot.edit_message_text("👤 **ئایدی ئەو کەسە بنێرە کە دەتەوێت خاڵی بۆ زیاد بکەیت:**",
@@ -691,7 +689,7 @@ def process_add_points_amount(message, target_id):
             bot.send_message(target_id, f"🎁 **دیاری!** ئەدمین بڕی `{amount}` خاڵی خستە سەر هەژمارەکەت.")
         except: pass
     except:
-        bot.send_message(message.chat.id, "❌ بڕی خاڵ دەبێت تەنها ژمارە بێت.")
+        bot.send_message(message.chat.id, "❌ بڕی خاڵ دەبێت تەنها ژمارە بنووسە.")
 
 def create_gift_handler(call):
     if not is_admin(call.from_user.id): return
@@ -711,7 +709,6 @@ def process_create_gift_final(message):
         bot.send_message(message.chat.id, f"✅ **کۆدی دیاری دروستکرا:**\n\n`{code}`\n💎 **بڕی خاڵ:** {amount}", parse_mode='Markdown')
     except:
         bot.send_message(message.chat.id, "❌ تەنها ژمارە بنووسە.")
-# ------------------------------------------------------------------
 
 def manage_admins(call):
     if not is_admin(call.from_user.id):
@@ -726,7 +723,8 @@ def manage_admins(call):
         types.InlineKeyboardButton("🗑 سڕینەوەی ئەدمینەکان", callback_data="delete_admins")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
+        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin"),
+        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
     )
     
     bot.edit_message_text(f"""👥 **بەڕێوەبردنی ئەدمینەکان**
@@ -808,6 +806,7 @@ def show_broadcast(call):
         types.InlineKeyboardButton("🔗 فۆروەرد", callback_data="broadcast_forward")
     )
     keyboard.row(
+        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"),
         types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
     )
     
@@ -866,14 +865,6 @@ def process_gift_code(message):
     conn.close()
     start(message)
 
-@bot.callback_query_handler(func=lambda call: call.data == "back_to_main")
-def back_to_main(call):
-    start(call.message)
-
-@bot.callback_query_handler(func=lambda call: call.data == "back_to_admin")
-def back_to_admin(call):
-    admin_panel(call)
-
 @bot.message_handler(commands=['help'])
 def help_command(message):
     help_text = """🆘 **ڕێبەری بەکارهێنانی بۆت**
@@ -884,17 +875,14 @@ def help_command(message):
 
 1. **کۆکردنەوەی خاڵ 💰**
    - بڵاوکردنەوەی لینکی بانگهێشت
-   - ڕادەستکردنی ئەکاونت
    - کڕینی خاڵ بە شێوەی ڕاستەوخۆ
 
 2. **داواکردن 🎯**  
    - جۆری خزمەتگوزاری هەڵبژێرە
-   - بڕی پێویست بنووسە
    - لینک بنێرە
 
 3. **بەڕێوەبردنی هەژمار 👤**
    - بینینی خاڵەکان
-   - بینینی داواکارییەکان
    - بەکارهێنانی کۆدی دیاری
 
 📞 **پشتیوانی:** @BradostZangana
@@ -935,7 +923,6 @@ if __name__ == "__main__":
     for admin_id in ADMINS:
         add_admin(admin_id)
     
-    # بۆ چارەسەری کێشەی Conflict و ئێرۆرە سوورەکە
     try:
         bot.delete_webhook()
         bot.infinity_polling(timeout=60, long_polling_timeout=30)
