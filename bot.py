@@ -170,23 +170,70 @@ def check_subscription(user_id):
     except:
         return False
 
-# ناوی خزمەتگوزارییەکان بە کوردی
+# --- نوێکراوە: لیستی هەموو خزمەتگوزارییەکان بەپێی وێنەکان ---
 SERVICES = {
-    'instagram': {
-        'followers': [
-            {'name': 'فۆڵۆوەرزی جێگیر', 'price': 1, 'service_id': 9650},
-            {'name': 'فۆڵۆوەرزی ناجێگیر', 'price': 2, 'service_id': 9650},
-            {'name': 'فۆڵۆوەرزی ڕاستەقینە', 'price': 0.5, 'service_id': 9650},
-            {'name': 'ڵایک', 'price': 15, 'service_id': 9168},
-            {'name': 'بینین (Views)', 'price': 25, 'service_id': 5132},
-        ]
-    },
-    'telegram': {
-        'members': [
-            {'name': 'ئەندامی کەناڵ', 'price': 2.1, 'service_id': 8504},
-            {'name': 'بینینی پۆست', 'price': 25, 'service_id': 10401},
-        ]
-    }
+    'tiktok': [
+        {'name': '👤 فۆڵۆوەرەکانی تیک تۆک کوالێتی مامناوەند', 'price': 2000},
+        {'name': '👤 فۆڵۆوەرەکانی تیک تۆک کوالێتی بەرز', 'price': 2500},
+        {'name': '👤 فۆڵۆوەرەکانی تیک تۆک ڕاستەقینەی ئینگلیزی', 'price': 4000},
+        {'name': '👤 فۆڵۆوەرەکانی تیک تۆک هەرزان', 'price': 1000},
+        {'name': '👤 فۆڵۆوەرەکانی تیک تۆک زۆر بەرز و خێرا', 'price': 3000},
+        {'name': '❤️ ڵایک پۆست تیک تۆک جێگیر', 'price': 2000},
+        {'name': '❤️ ڵایک پۆست تیک تۆک کوالێتی بەرز', 'price': 2200},
+        {'name': '❤️ ڵایک پۆست تیک تۆک زۆر هەرزان', 'price': 1200},
+        {'name': '💥 ڵایک + بینەر پۆست تیک تۆک', 'price': 2000},
+        {'name': '🔰 سەیڤی پۆست تیک تۆک', 'price': 1000},
+        {'name': '🔰 سەیڤی پۆست تیک تۆک هەرزان', 'price': 800},
+        {'name': '🔄 شەێری پۆست تیک تۆک خێرایە', 'price': 1500},
+        {'name': '🔄 شەێری پۆست تیک تۆک هەرزان', 'price': 900},
+        {'name': '🔴 کۆمێنتی پۆستی تیک تۆک ئیمۆجی', 'price': 2000},
+        {'name': '🟢 کۆمێنتی پۆستی تیک تۆک ئیمۆجی', 'price': 2000},
+        {'name': '👁 بینەری پۆست تیک تۆک', 'price': 200},
+        {'name': '👁 بینەری پۆست تیک تۆک کوالێتی باش', 'price': 400},
+        {'name': '📽 بینەری لایف تیک تۆک (15) خولەک', 'price': 3000},
+        {'name': '📽 بینەری لایف تیک تۆک (30) خولەک', 'price': 5000},
+        {'name': '📽 بینەری لایف تیک تۆک (60) خولەک', 'price': 9000},
+        {'name': '🔥 ڵایکی لایف تیک تۆک زۆر هەرزان', 'price': 1000},
+        {'name': '💎 خاڵ چاڵێنجەکانی لایف تیک تۆک', 'price': 5000}
+    ],
+    'instagram': [
+        {'name': '👥 فۆڵۆوەرزی ئینستاگرام جێگیر', 'price': 2000},
+        {'name': '❤️ ڵایکی ئینستاگرام خێرا', 'price': 1000}
+    ],
+    'telegram': [
+        {'name': '👥 ئەندامی تێلیگرام کەناڵ/گرووپ', 'price': 2000},
+        {'name': '👁 بینەری پۆست تێلیگرام', 'price': 200}
+    ],
+    'youtube': [
+        {'name': '👥 سەبسکرایبی یوتیوب جێگیر', 'price': 6000},
+        {'name': '👁 بینەری ڤیدیۆی یوتیوب', 'price': 2000}
+    ],
+    'facebook': [
+        {'name': '👥 فۆڵۆوەرزی پەیجی فەیسبووک', 'price': 2500},
+        {'name': '👍 ڵایکی پۆستی فەیسبووک', 'price': 1500}
+    ],
+    'snapchat': [
+        {'name': '👥 فۆڵۆوەرزی سناپچات', 'price': 5000}
+    ],
+    'twitter': [
+        {'name': '👥 فۆڵۆوەرزی تویتەر', 'price': 4000}
+    ],
+    'whatsapp': [
+        {'name': '📞 خزمەتگوزاری واتسئەپ', 'price': 3000}
+    ],
+    'threads': [
+        {'name': '👥 فۆڵۆوەرزی ثریدز', 'price': 2000}
+    ],
+    'pinterest': [
+        {'name': '👥 فۆڵۆوەرزی پینتەرست', 'price': 2000}
+    ],
+    'free': [
+        {'name': '🎁 ١٠ بینەری پۆستی تێلیگرام', 'price': 0},
+        {'name': '🎁 ١٠ ڵایکی تیک تۆک', 'price': 0}
+    ],
+    'cheap': [
+        {'name': '📉 فۆڵۆوەرزی هەرزان (ناجێگیر)', 'price': 800}
+    ]
 }
 
 @bot.message_handler(commands=['start'])
@@ -311,93 +358,102 @@ def handle_callbacks(call):
 
 def show_services(call):
     keyboard = types.InlineKeyboardMarkup()
+    keyboard.row(types.InlineKeyboardButton("🔹 خزمەتگوزاری بێ بەرامبەر 🔹", callback_data="service_free"))
     keyboard.row(
-        types.InlineKeyboardButton("📸 ئینستاگرام", callback_data="service_instagram"),
-        types.InlineKeyboardButton("📱 تێلیگرام", callback_data="service_telegram")
+        types.InlineKeyboardButton("📱 تێلیگرام", callback_data="service_telegram"),
+        types.InlineKeyboardButton("📸 ئینستاگرام", callback_data="service_instagram")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🎵 تیک تۆک", callback_data="service_tiktok"),
+        types.InlineKeyboardButton("📽 یوتیوب", callback_data="service_youtube"),
+        types.InlineKeyboardButton("🎵 تیک تۆک", callback_data="service_tiktok")
+    )
+    keyboard.row(
+        types.InlineKeyboardButton("📞 واتسئەپ", callback_data="service_whatsapp"),
         types.InlineKeyboardButton("📘 فەیسبووک", callback_data="service_facebook")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🐦 تویتەر", callback_data="service_twitter"),
-        types.InlineKeyboardButton("📺 یوتیوب", callback_data="service_youtube")
+        types.InlineKeyboardButton("👻 سناپچات", callback_data="service_snapchat"),
+        types.InlineKeyboardButton("🐦 تویتەر", callback_data="service_twitter")
     )
+    keyboard.row(
+        types.InlineKeyboardButton("🧵 ثریدز", callback_data="service_threads"),
+        types.InlineKeyboardButton("📌 پینتەرست", callback_data="service_pinterest")
+    )
+    keyboard.row(types.InlineKeyboardButton("🔹 هەرزانترین خزمەتگوزاری 🔹", callback_data="service_cheap"))
     keyboard.row(
         types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
     )
     
-    bot.edit_message_text("""🛒 **بەشی خزمەتگوزارییەکان**
-
-ئەو سۆشیاڵ میدیایە هەڵبژێرە کە دەتەوێت خزمەتگوزاری بۆ داوا بکەیت:""", 
+    bot.edit_message_text("""- **لیستی بەشەکان دانەیەکی هەڵبژێرە** 📦""", 
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
                          parse_mode='Markdown')
 
 def show_service_details(call):
-    service = call.data.replace("service_", "")
+    service_key = call.data.replace("service_", "")
     
-    if service == "instagram":
-        services_list = SERVICES['instagram']['followers']
-        text = "📸 **خزمەتگوزارییەکانی ئینستاگرام**\n\n"
-    else:
-        services_list = []
-        text = f"**خزمەتگوزارییەکانی {service}**\n\n"
+    services_list = SERVICES.get(service_key, [])
+    
+    if not services_list:
+        bot.answer_callback_query(call.id, "هیچ خزمەتگوزارییەک لەم بەشەدا نییە!")
+        return
+
+    text = f"- **ئەوەی دەتەوێت لە خوارەوە هەڵبژێرە** 🛒"
     
     keyboard = types.InlineKeyboardMarkup()
     
-    for idx, service_item in enumerate(services_list[:30]):
+    for idx, service_item in enumerate(services_list):
         keyboard.row(
             types.InlineKeyboardButton(
-                f"{service_item['name']} - {service_item['price']} خاڵ", 
-                callback_data=f"order_{service}_{idx}"
+                f"{service_item['name']}", 
+                callback_data=f"order_{service_key}_{idx}"
             )
         )
     
     keyboard.row(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="services"))
     keyboard.row(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
-    bot.edit_message_text(text + "خزمەتگوزارییەک هەڵبژێرە:",
+    bot.edit_message_text(text,
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          reply_markup=keyboard,
                          parse_mode='Markdown')
 
 def create_service_order(call):
-    data = call.data.replace("order_", "")
-    service, index = data.split("_")
-    index = int(index)
+    data = call.data.replace("order_", "").split("_")
+    service_key = data[0]
+    index = int(data[1])
     
-    service_item = SERVICES['instagram']['followers'][index]
+    service_item = SERVICES[service_key][index]
     
-    msg = bot.edit_message_text(f"""🛒 **داواکردنی: {service_item['name']}**
+    msg = bot.edit_message_text(f"""💰 **نرخ: {service_item['price']} خاڵ (بۆ هەر 1k)**
+📉 **کەمترین بڕ: 50**
+📈 **زۆرترین بڕ: 50000**
 
-💵 **نرخ:** {service_item['price']} خاڵ بۆ هەر 1000 دانە
-────────────────
-📥 **ئێستا لینکەکە بنێرە:**""",
+🔢 **تکایە ژمارەی ئەو بڕەی دەتەوێت بنێرە:** 👇""",
                          chat_id=call.message.chat.id,
                          message_id=call.message.message_id,
                          parse_mode='Markdown')
     
-    bot.register_next_step_handler(msg, process_order_link, service_item)
+    bot.register_next_step_handler(msg, process_order_quantity, service_item)
 
-def process_order_link(message, service_item):
-    link = message.text
-    msg = bot.send_message(message.chat.id, f"📊 **بڕی داواکراو بنووسە:**")
-    bot.register_next_step_handler(msg, process_order_quantity, service_item, link)
-
-def process_order_quantity(message, service_item, link):
-    user_id = message.from_user.id
-    
+def process_order_quantity(message, service_item):
     try:
         quantity = int(message.text)
-        if quantity < 100:
-            bot.send_message(message.chat.id, "❌ کەمترین بڕی داواکراو 100 دانەیە")
-            return start(message)
+        if quantity < 50:
+            bot.send_message(message.chat.id, "❌ کەمترین بڕ ٥٠ دانەیە")
+            return
     except:
         bot.send_message(message.chat.id, "❌ تکایە تەنها ژمارە بنووسە")
-        return start(message)
+        return
+
+    msg = bot.send_message(message.chat.id, "🔗 **ئێستا لینکی پۆست یان پڕۆفایڵ بنێرە:**")
+    bot.register_next_step_handler(msg, process_order_link_final, service_item, quantity)
+
+def process_order_link_final(message, service_item, quantity):
+    user_id = message.from_user.id
+    link = message.text
     
     cost = (quantity / 1000) * service_item['price']
     cost = round(cost)
@@ -432,9 +488,7 @@ def process_order_quantity(message, service_item, link):
 🔗 **لینک:** {link}
 📊 **بڕ:** {quantity}
 💎 **تێچوو:** {cost} خاڵ
-⏳ **بارودۆخ:** چاوەڕوانکردن
-
-لە ماوەیەکی کەمدا دەست پێدەکات ⏰""", parse_mode='Markdown')
+⏳ **بارودۆخ:** چاوەڕوانکردن""", parse_mode='Markdown')
     
     user = get_user(user_id)
     admin_msg = f"""🆕 **داواکارییەکی نوێ**
