@@ -170,8 +170,91 @@ def check_subscription(user_id):
     except:
         return False
 
-# --- نوێکراوە: لیستی هەموو خزمەتگوزارییەکان بەپێی وێنەکان ---
+# --- نوێکراوە: لیستی هەموو خزمەتگوزارییە نوێیەکان بەپێی وێنەکان ---
 SERVICES = {
+    'tg_members': [
+        {'name': '👥 ئەندام کەناڵ و گروپ تێلیگرام گەرەنتی (60) ڕۆژ 👥', 'price': 1500},
+        {'name': '👤 ئەندامی تێلیگرام جێگیر (30) ڕۆژ 👤', 'price': 1200},
+        {'name': '👤 ئەندامی تێلیگرام جێگیر (90) ڕۆژ 👤', 'price': 1800},
+        {'name': '👤 ئەندامی تێلیگرام عەرەب گەرەنتی (30) ڕۆژ 👤', 'price': 2500},
+        {'name': '👤 ئەندام کەناڵ و گروپ تێلیگرام گەرەنتی (180) ڕۆژ 👤', 'price': 3000},
+        {'name': '👤 ئەندام ئۆنلاین کەناڵ و گروپ گەرەنتی (30) ڕۆژ 👤', 'price': 3500},
+    ],
+    'tg_views': [
+        {'name': '👁 بینەری پۆستی کەناڵ تێلیگرام', 'price': 100},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (1) پۆست', 'price': 150},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (5) پۆست', 'price': 500},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (10) پۆست', 'price': 1000},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (15) پۆست', 'price': 1500},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (20) پۆست', 'price': 2000},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (30) پۆست', 'price': 3000},
+        {'name': '👁 بینەری کەناڵ تێلیگرام (50) پۆست', 'price': 4500},
+        {'name': '👁 بینەری ستۆری تێلیگرام 👀', 'price': 800},
+        {'name': '✨ بووست کەناڵ کردنەوەی ستۆری گەرەنتی (1) ڕۆژ', 'price': 4000},
+        {'name': '🤩 بووست کەناڵ کردنەوەی ستۆری گەرەنتی (1) ڕۆژ', 'price': 4000},
+        {'name': '✨ بووست کەناڵ کردنەوەی ستۆری گەرەنتی (30) ڕۆژ', 'price': 25000},
+    ],
+    'tg_reactions': [
+        {'name': 'ریاکشن پۆست جۆر ( 👍 😍 ❤️ 🔥 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( ❤️ 🔥 👍 🎉 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 👎 🤩 😢 💩 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( ❤️ 💯 🎉 🏆 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 🍓 🎄 🦄 🕊 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 💔 💋 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 👏 🤣 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 👎 💔 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 😱 😢 )', 'price': 300},
+        {'name': 'ریاکشن پۆست جۆر ( 💔 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 😈 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( ❤️ )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🔥 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🤣 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 👍 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 👏 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🏆 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 👻 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 😭 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 😱 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 💯 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🥰 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🍓 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 💋 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 💔 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🙈 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 😘 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 💅 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 😡 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( 🫡 )', 'price': 200},
+        {'name': 'ریاکشن پۆست جۆر ( ❤️‍🔥 )', 'price': 200},
+    ],
+    'youtube': [
+        {'name': '👤 سەبسکرایبی یوتیوب لە ڕێگەی ڕیکلامەوە 👤', 'price': 8000},
+        {'name': '👤 سەبسکرایبی یوتیوب ڕاستەقینە 👤', 'price': 6000},
+        {'name': '👍 ڵایکی پۆست یوتیوب زۆر خێرا 👍', 'price': 1500},
+        {'name': '👍 ڵایکی پۆست یوتیوب هەرزان 👍', 'price': 800},
+        {'name': '👍 ڵایکی پۆست یوتیوب بە گەرەنتی 👍', 'price': 2000},
+        {'name': '🇸🇦 کۆمێنتی یوتیوب هەڕەمەکی عەرەب', 'price': 3500},
+        {'name': '↪️ شەێری پۆست یوتیوب', 'price': 1200},
+        {'name': '👁 بینەری پۆست یوتیوب گەرەنتی هەتاهەتای 👁', 'price': 3500},
+        {'name': '👁 بینەری پۆست یوتیوب ڕاستەقینە 👁', 'price': 4500},
+        {'name': '👁 بینەری لایف یوتیوب ڕاستەقینە 👀', 'price': 5000},
+    ],
+    'snapchat': [
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات ڕاستەقینە 👻', 'price': 7000},
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات ڕووسیا 👻', 'price': 4000},
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات بەنگلادیش 👻', 'price': 3500},
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات عەرەبی 👻', 'price': 6000},
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات پاکستانی 👻', 'price': 4000},
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات تورکی 👻', 'price': 4500},
+        {'name': '👻 فۆڵۆوەرەکانی سناپچات کوالێتی بەرز 👻', 'price': 5500},
+        {'name': '❤️ ڵایکەکانی سناپچات عەرەبی ❤️', 'price': 2500},
+        {'name': '💕 ڵایکەکانی سناپچات عەرەبی 💕', 'price': 2500},
+        {'name': '👁 بینەری ڤیدیۆی سپۆتلایت سناپچات دوبەی', 'price': 1500},
+        {'name': '👁 بینەری ڤیدیۆی سپۆتلایت سناپچات عومان', 'price': 1500},
+        {'name': '👁 بینەری ڤیدیۆی سپۆتلایت سناپچات قەتەر', 'price': 1500},
+        {'name': '👁 بینەری ڤیدیۆی سپۆتلایت سناپچات کوێت', 'price': 1500},
+        {'name': '👁 بینەری ڤیدیۆی سپۆتلایت سناپچات عێراق', 'price': 1500},
+    ],
     'tiktok': [
         {'name': '👤 فۆڵۆوەرەکانی تیک تۆک کوالێتی مامناوەند', 'price': 2000},
         {'name': '👤 فۆڵۆوەرەکانی تیک تۆک کوالێتی بەرز', 'price': 2500},
@@ -200,20 +283,9 @@ SERVICES = {
         {'name': '👥 فۆڵۆوەرزی ئینستاگرام جێگیر', 'price': 2000},
         {'name': '❤️ ڵایکی ئینستاگرام خێرا', 'price': 1000}
     ],
-    'telegram': [
-        {'name': '👥 ئەندامی تێلیگرام کەناڵ/گرووپ', 'price': 2000},
-        {'name': '👁 بینەری پۆست تێلیگرام', 'price': 200}
-    ],
-    'youtube': [
-        {'name': '👥 سەبسکرایبی یوتیوب جێگیر', 'price': 6000},
-        {'name': '👁 بینەری ڤیدیۆی یوتیوب', 'price': 2000}
-    ],
     'facebook': [
         {'name': '👥 فۆڵۆوەرزی پەیجی فەیسبووک', 'price': 2500},
         {'name': '👍 ڵایکی پۆستی فەیسبووک', 'price': 1500}
-    ],
-    'snapchat': [
-        {'name': '👥 فۆڵۆوەرزی سناپچات', 'price': 5000}
     ],
     'twitter': [
         {'name': '👥 فۆڵۆوەرزی تویتەر', 'price': 4000}
@@ -313,6 +385,14 @@ def handle_callbacks(call):
     
     if call.data == "services":
         show_services(call)
+    elif call.data == "service_telegram":
+        show_telegram_menu(call)
+    elif call.data == "tg_members":
+        show_service_details(call, "tg_members")
+    elif call.data == "tg_views":
+        show_service_details(call, "tg_views")
+    elif call.data == "tg_reactions":
+        show_service_details(call, "tg_reactions")
     elif call.data == "account":
         show_account(call)
     elif call.data == "earn_points":
@@ -348,9 +428,12 @@ def handle_callbacks(call):
     elif call.data == "delete_admins":
         delete_admins(call)
     elif call.data == "back_to_main":
+        bot.delete_message(call.message.chat.id, call.message.message_id)
         start(call.message)
     elif call.data == "back_to_admin":
         admin_panel(call)
+    elif call.data == "back_to_services":
+        show_services(call)
     elif call.data.startswith("service_"):
         show_service_details(call)
     elif call.data.startswith("order_"):
@@ -381,7 +464,7 @@ def show_services(call):
     )
     keyboard.row(types.InlineKeyboardButton("🔹 هەرزانترین خزمەتگوزاری 🔹", callback_data="service_cheap"))
     keyboard.row(
-        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_main")
     )
     
     bot.edit_message_text("""- **لیستی بەشەکان دانەیەکی هەڵبژێرە** 📦""", 
@@ -390,8 +473,23 @@ def show_services(call):
                          reply_markup=keyboard,
                          parse_mode='Markdown')
 
-def show_service_details(call):
-    service_key = call.data.replace("service_", "")
+def show_telegram_menu(call):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.row(types.InlineKeyboardButton("👥 ئەندامانی تێلیگرام", callback_data="tg_members"))
+    keyboard.row(types.InlineKeyboardButton("👁 بینەری پۆست و ستۆری", callback_data="tg_views"))
+    keyboard.row(types.InlineKeyboardButton("🎭 ریاکشن (کاردانەوە)", callback_data="tg_reactions"))
+    keyboard.row(types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_services"))
+    
+    bot.edit_message_text("📂 **بەشی تێلیگرام یەکێک هەڵبژێرە:**", 
+                         chat_id=call.message.chat.id, 
+                         message_id=call.message.message_id, 
+                         reply_markup=keyboard)
+
+def show_service_details(call, manual_key=None):
+    if manual_key:
+        service_key = manual_key
+    else:
+        service_key = call.data.replace("service_", "")
     
     services_list = SERVICES.get(service_key, [])
     
@@ -411,7 +509,12 @@ def show_service_details(call):
             )
         )
     
-    keyboard.row(types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="services"))
+    # بڕیاردان لەسەر ئەوەی دوگمەی گەڕانەوە بمانباتەوە بۆ کوێ
+    back_target = "back_to_services"
+    if service_key.startswith("tg_"):
+        back_target = "service_telegram"
+        
+    keyboard.row(types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data=back_target))
     keyboard.row(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
     bot.edit_message_text(text,
@@ -422,8 +525,14 @@ def show_service_details(call):
 
 def create_service_order(call):
     data = call.data.replace("order_", "").split("_")
-    service_key = data[0]
-    index = int(data[1])
+    
+    # چارەسەرکردنی کاتێک پارتەکان زیادن (بۆ تێلیگرام)
+    if len(data) == 3:
+        service_key = f"{data[0]}_{data[1]}"
+        index = int(data[2])
+    else:
+        service_key = data[0]
+        index = int(data[1])
     
     service_item = SERVICES[service_key][index]
     
@@ -524,7 +633,7 @@ def show_account(call):
 📅 **بەرواری بەشداریکردن:** {join_date[:10]}"""
 
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
+    keyboard.add(types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_main"))
     
     bot.edit_message_text(account_text,
                          chat_id=call.message.chat.id,
@@ -546,7 +655,7 @@ def show_earn_points(call):
         types.InlineKeyboardButton("💰 کڕینی خاڵ", callback_data="buy_points")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_main")
     )
     
     bot.edit_message_text(f"""💰 **بەشی کۆکردنەوەی خاڵ**
@@ -577,10 +686,9 @@ def show_buy_points(call):
         types.InlineKeyboardButton("🎫 کارتی بارگاوی کردن", callback_data="charge_card")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_main")
     )
     
-    # لێرە یوزەرنییمی خۆت بنووسە لە جیاتی FFJFF5
     bot.edit_message_text("""💳 **بەشی کڕینی خاڵ**
 
 💎 **نرخی خاڵەکان:**
@@ -625,7 +733,7 @@ def show_my_orders(call):
             text += "────────────────\n"
     
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
+    keyboard.add(types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_main"))
     
     bot.edit_message_text(text,
                          chat_id=call.message.chat.id,
@@ -668,7 +776,7 @@ def admin_panel(call):
         types.InlineKeyboardButton("🎁 بەشی دیاری", callback_data="rshq_panel")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"),
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_main"),
         types.InlineKeyboardButton("🔄 نوێکردنەوە", callback_data="admin_panel")
     )
     
@@ -706,7 +814,7 @@ def show_rshq_panel(call):
         types.InlineKeyboardButton("❌ داخستنی ڕەشق", callback_data="disable_rshq")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_admin")
     )
     keyboard.row(types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"))
     
@@ -730,7 +838,7 @@ def add_points_handler(call):
 def process_add_points_id(message):
     try:
         target_id = int(message.text)
-        msg = bot.send_message(message.chat.id, f"💎 **بڕی ئەو خاڵانە بنووسە کە دەتەوێت بۆ `{target_id}` زیاد بکرێت:**")
+        msg = bot.send_message(message.chat.id, f"💎 **بڕی ئەو خاڵە بنێرە کە دەتەوێت بۆ `{target_id}` زیاد بکرێت:**")
         bot.register_next_step_handler(msg, process_add_points_amount, target_id)
     except:
         bot.send_message(message.chat.id, "❌ تکایە ئایدی بە دروستی بنووسە.")
@@ -778,7 +886,7 @@ def manage_admins(call):
         types.InlineKeyboardButton("🗑 سڕینەوەی ئەدمینەکان", callback_data="delete_admins")
     )
     keyboard.row(
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin"),
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_admin"),
         types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main")
     )
     
@@ -862,7 +970,7 @@ def show_broadcast(call):
     )
     keyboard.row(
         types.InlineKeyboardButton("🏠 پەرەی سەرەکی", callback_data="back_to_main"),
-        types.InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_to_admin")
+        types.InlineKeyboardButton("گەڕانەوە ⬅️", callback_data="back_to_admin")
     )
     
     bot.edit_message_text("""📢 **بەشی ناردنی نامە بۆ هەمووان**
@@ -940,7 +1048,7 @@ def help_command(message):
    - بینینی خاڵەکان
    - بەکارهێنانی کۆدی دیاری
 
-📞 **پشتیوانی:** @یوزەرنییمی_خۆت
+📞 **پشتیوانی:** @BradostZangana
 📢 **کەناڵ:** @onestore6"""
 
     bot.send_message(message.chat.id, help_text, parse_mode='Markdown')
