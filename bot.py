@@ -428,8 +428,13 @@ def handle_callbacks(call):
     elif call.data == "delete_admins":
         delete_admins(call)
     elif call.data == "back_to_main":
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-        start(call.message)
+        try:
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+        except Exception as e:
+            # ئێرە کۆمێنتە و دەبێت بە # دەستپێبکات
+            print(f"کێشە لە سڕینەوەی نامە: {e}")
+
+        start(call.message) # دەبێت ئاوا ئیندێنت بکرێت بۆ لای ڕاست
     elif call.data == "back_to_admin":
         admin_panel(call)
     elif call.data == "back_to_services":
