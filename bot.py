@@ -10,6 +10,7 @@ import string
 import time
 import threading
 
+# وەرگرتنی توکن لە ڕێگەی Variable کانی Railway
 token = os.getenv("BOT_TOKEN") 
 ADMIN_ID = 1621554170
 CHANNEL = '@onestore6'
@@ -170,7 +171,6 @@ def check_subscription(user_id):
     except:
         return False
 
-# --- نوێکراوە: لیستی هەموو خزمەتگوزارییە نوێیەکان بەپێی وێنەکان ---
 SERVICES = {
     'tg_members': [
         {'name': '👥 ئەندام کەناڵ و گروپ تێلیگرام گەرەنتی (60) ڕۆژ 👥', 'price': 1500},
@@ -219,7 +219,6 @@ SERVICES = {
         {'name': 'ریاکشن پۆست جۆر ( 🥰 )', 'price': 200},
         {'name': 'ریاکشن پۆست جۆر ( 🍓 )', 'price': 200},
         {'name': 'ریاکشن پۆست جۆر ( 💋 )', 'price': 200},
-        {'name': 'ریاکشن پۆست جۆر ( 💔 )', 'price': 200},
         {'name': 'ریاکشن پۆست جۆر ( 🙈 )', 'price': 200},
         {'name': 'ریاکشن پۆست جۆر ( 😘 )', 'price': 200},
         {'name': 'ریاکشن پۆست جۆر ( 💅 )', 'price': 200},
@@ -431,10 +430,8 @@ def handle_callbacks(call):
         try:
             bot.delete_message(call.message.chat.id, call.message.message_id)
         except Exception as e:
-            # ئێرە کۆمێنتە و دەبێت بە # دەستپێبکات
             print(f"کێشە لە سڕینەوەی نامە: {e}")
-
-        start(call.message) # دەبێت ئاوا ئیندێنت بکرێت بۆ لای ڕاست
+        start(call.message)
     elif call.data == "back_to_admin":
         admin_panel(call)
     elif call.data == "back_to_services":
@@ -514,7 +511,6 @@ def show_service_details(call, manual_key=None):
             )
         )
     
-    # بڕیاردان لەسەر ئەوەی دوگمەی گەڕانەوە بمانباتەوە بۆ کوێ
     back_target = "back_to_services"
     if service_key.startswith("tg_"):
         back_target = "service_telegram"
@@ -531,7 +527,6 @@ def show_service_details(call, manual_key=None):
 def create_service_order(call):
     data = call.data.replace("order_", "").split("_")
     
-    # چارەسەرکردنی کاتێک پارتەکان زیادن (بۆ تێلیگرام)
     if len(data) == 3:
         service_key = f"{data[0]}_{data[1]}"
         index = int(data[2])
@@ -573,7 +568,7 @@ def process_order_link_final(message, service_item, quantity):
     cost = round(cost)
     
     user = get_user(user_id)
-    if user[4] < cost:
+    if not user or user[4] < cost:
         bot.send_message(message.chat.id, f"❌ خاڵەکانت بەش ناکات. پێویستت بە {cost} خاڵ هەیە")
         return start(message)
     
@@ -755,12 +750,12 @@ def admin_command(message):
 def admin_panel(call):
     if isinstance(call, types.CallbackQuery):
         message = call.message
-        user_id = call.from_user.id
+        u_id = call.from_user.id
     else:
         message = call
-        user_id = call.from_user.id
+        u_id = call.from_user.id
     
-    if not is_admin(user_id):
+    if not is_admin(u_id):
         return
     
     total_users = get_total_users()
@@ -1088,12 +1083,14 @@ if __name__ == "__main__":
     if not get_setting('notifications'):
         set_setting('notifications', 'on')
     
-    for admin_id in ADMINS:
-        add_admin(admin_id)
+    for a_id in ADMINS:
+        add_admin(a_id)
     
-    try:
-        bot.delete_webhook()
-        bot.infinity_polling(timeout=60, long_polling_timeout=30)
-    except Exception as e:
-        print(f"Error: {e}")
-        time.sleep(10)
+    # چارەسەری ئیرۆری Conflict و Unauthorized
+    while True:
+        try:
+            bot.remove_webhook(drop_pending_updates=True)
+            bot.infinity_polling(timeout=60, long_polling_timeout=30)
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            time.sleep(5)
