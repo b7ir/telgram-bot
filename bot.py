@@ -1086,10 +1086,10 @@ if __name__ == "__main__":
     for a_id in ADMINS:
         add_admin(a_id)
     
-    # چارەسەری ئیرۆری Conflict و Unauthorized
+    # چاککردنی کۆتایی بۆ ئەوەی لەگەڵ هەموو ڤێرژنەکان بگونجێت
     while True:
         try:
-            bot.remove_webhook(drop_pending_updates=True)
+            bot.remove_webhook() # لێرەدا ئەو نووسینە زیادەیەم لابرد کە ئیرۆری دەدا
             bot.infinity_polling(timeout=60, long_polling_timeout=30)
         except Exception as e:
             print(f"Error occurred: {e}")
