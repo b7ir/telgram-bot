@@ -586,8 +586,7 @@ def process_order_link_final(message, service_item, quantity):
     user_id = message.from_user.id
     link = message.text
     
-    cost = (quantity / 1000) * service_item['price']
-    cost = round(cost)
+    cost = round((quantity / 1000) * service_item['price'])
     
     user = get_user(user_id)
     if not user or user[4] < cost:
@@ -597,19 +596,22 @@ def process_order_link_final(message, service_item, quantity):
     # ١. بڕینی خاڵ لە بەکارهێنەر
     update_user_points(user_id, -cost)
     
-    # ٢. ناردنی داواکاری بۆ kd1s.com بە شێوەی ئۆتۆماتیکی
-    api_res = send_to_smm_panel(service_item['id'], link, quantity)
+    # ٢. ناردنی داواکاری بۆ سایت (kd1s.com)
+    service_id = service_item.get('id', 0)
+    api_res = send_to_smm_panel(service_id, link, quantity)
     
     api_order_id = "Manual"
     status_msg = "✅ داواکارییەکەت تۆمارکرا"
     
-    if 'order' in api_res:
+    if isinstance(api_res, dict) and 'order' in api_res:
         api_order_id = str(api_res['order'])
         status_msg = "✅ بە سەرکەوتوویی بۆ سایت نێردرا"
     else:
-        # ئەگەر سایتەکە ئیرۆری دا، دەتوانیت لێرە ئاگادارییەک بنێریت
-        bot.send_message(ADMIN_ID, f"⚠️ ئاگاداری: داواکارییەک بۆ سایت نەنێردرا!\nبەکارهێنەر: {user_id}\nئیرۆر: {api_res}")
+        # ئەگەر سایتەکە ئیرۆری دا، تەنها ئەدمین ئاگادار دەکەینەوە
+        error_detail = str(api_res).replace('<', '').replace('>', '')
+        bot.send_message(ADMIN_ID, f"⚠️ ئیرۆر لە سایت: {error_detail}")
 
+    # ٣. تۆمارکردن لە داتابەیس
     conn = sqlite3.connect('bot_data.db')
     cursor = conn.cursor()
     order_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -619,38 +621,32 @@ def process_order_link_final(message, service_item, quantity):
                   (user_id, service_item['name'], quantity, link, order_date, api_order_id))
     
     order_id = cursor.lastrowid
-    
     cursor.execute("UPDATE users SET orders_count = orders_count + 1, spent_points = spent_points + ? WHERE user_id = ?",
                   (cost, user_id))
     
     conn.commit()
     conn.close()
     
-    bot.send_message(message.chat.id, f"""✅ **داواکارییەکەت بە سەرکەوتوویی تۆمارکرا!**
-
-📦 **ژمارەی داواکاری:** `{order_id}`
-🎯 **خزمەتگوزاری:** {service_item['name']}
-🔗 **لینک:** {link}
-📊 **بڕ:** {quantity}
-💎 **تێچوو:** {cost} خاڵ
-🆔 **ئایدی سایت:** `{api_order_id}`
-────────────────
-{status_msg}""", parse_mode='Markdown')
+    # ناردنی نامەی سەرکەوتن بە HTML بۆ ئەوەی ئیرۆر نەکات
+    response_text = (
+        f"✅ <b>داواکارییەکەت بە سەرکەوتوویی تۆمارکرا!</b>\n\n"
+        f"📦 <b>ژمارەی داواکاری:</b> <code>{order_id}</code>\n"
+        f"🎯 <b>خزمەتگوزاری:</b> {service_item['name']}\n"
+        f"🔗 <b>لینک:</b> {link}\n"
+        f"📊 <b>بڕ:</b> {quantity}\n"
+        f"💎 <b>تێچوو:</b> {cost} خاڵ\n"
+        f"🆔 <b>ئایدی سایت:</b> <code>{api_order_id}</code>\n"
+        f"────────────────\n"
+        f"{status_msg}"
+    )
     
-    user = get_user(user_id)
-    admin_msg = f"""🆕 **داواکارییەکی نوێ**
-
-👤 **بەکارهێنەر:** {user[2]} (@{user[1]})
-🆔 **ئایدی:** `{user_id}`
-📦 **داواکاری:** {service_item['name']}
-🔗 **لینک:** {link}
-📊 **بڕ:** {quantity}
-💎 **تێچوو:** {cost} خاڵ
-🆔 **سایت ئایدی:** {api_order_id}"""
-
-    bot.send_message(ADMIN_ID, admin_msg, parse_mode='Markdown')
-    start(message)
-
+    bot.send_message(message.chat.id, response_text, parse_mode='HTML')
+    
+    # ئاگادارکردنەوەی ئەدمین
+    admin_msg = f"🆕 <b>داواکاری نوێ</b>\n🆔 بەکارهێنەر: <code>{user_id}</code>\n📦 خزمەتگوزاری: {service_item['name']}\n📊 بڕ: {quantity}\n🆔 سایت ئایدی: {api_order_id}"
+    bot.send_message(ADMIN_ID, admin_msg, parse_mode='HTML')
+    
+    return start(message)
 def show_account(call):
     user = get_user(call.from_user.id)
     if not user:
