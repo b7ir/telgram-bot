@@ -186,13 +186,23 @@ def set_setting(key, value):
     conn.close()
 
 def check_subscription(user_id):
+    # ئەگەر بەکارهێنەرەکە ئەدمین بێت، پێویست بە پشکنین ناکات
+    if user_id in ADMINS or user_id == ADMIN_ID:
+        return True
     try:
         chat_member = bot.get_chat_member(CHANNEL, user_id)
-        return chat_member.status in ['member', 'administrator', 'creator']
-    except:
-        return False
+        # لێرە ستاتۆسی 'restricted'یشمان زیاد کردووە چونکە هەندێک کەس جۆینن بەڵام سنووردارن
+        if chat_member.status in ['member', 'administrator', 'creator', 'restricted']:
+            return True
+        else:
+            return False
+    except Exception as e:
+        # ئەگەر کێشەیەک لە تێلیگرام هەبوو یان بۆتەکە لە کەناڵەکە ئەدمین نەبوو
+        # بۆ ئەوەی بۆتەکە لەسەر بەکارهێنەر نەوەستێت، ڕێگەی پێ دەدەین (True)
+        print(f"کێشە لە پشکنینی جۆینبوون: {e}")
+        return True
 
-# لێرەدا دەبێت ID یەکان بە دەست بگۆڕیت بۆ ئەو ژمارەیەی لە سایتەکەدایە
+# لیستی هەموو خزمەتگوزارییەکان (بەبێ کەمکردنەوە)
 SERVICES = {
     'tg_members': [
         {'name': '👥 ئەندام کەناڵ و گروپ تێلیگرام گەرەنتی (60) ڕۆژ 👥', 'price': 1500, 'id': 0},
@@ -300,6 +310,34 @@ SERVICES = {
         {'name': '🔥 ڵایکی لایف تیک تۆک زۆر هەرزان', 'price': 1000, 'id': 0},
         {'name': '💎 خاڵ چاڵێنجەکانی لایف تیک تۆک', 'price': 5000, 'id': 0}
     ],
+    'instagram': [
+        {'name': '👥 فۆڵۆوەرزی ئینستاگرام جێگیر', 'price': 2000, 'id': 0},
+        {'name': '❤️ ڵایکی ئینستاگرام خێرا', 'price': 1000, 'id': 0}
+    ],
+    'facebook': [
+        {'name': '👥 فۆڵۆوەرزی پەیجی فەیسبووک', 'price': 2500, 'id': 0},
+        {'name': '👍 ڵایکی پۆستی فەیسبووک', 'price': 1500, 'id': 0}
+    ],
+    'twitter': [
+        {'name': '👥 فۆڵۆوەرزی تویتەر', 'price': 4000, 'id': 0}
+    ],
+    'whatsapp': [
+        {'name': '📞 خزمەتگوزاری واتسئەپ', 'price': 3000, 'id': 0}
+    ],
+    'threads': [
+        {'name': '👥 فۆڵۆوەرزی ثریدز', 'price': 2000, 'id': 0}
+    ],
+    'pinterest': [
+        {'name': '👥 فۆڵۆوەرزی پینتەرست', 'price': 2000, 'id': 0}
+    ],
+    'free': [
+        {'name': '🎁 ١٠ بینەری پۆستی تێلیگرام', 'price': 0, 'id': 0},
+        {'name': '🎁 ١٠ ڵایکی تیک تۆک', 'price': 0, 'id': 0}
+    ],
+    'cheap': [
+        {'name': '📉 فۆڵۆوەرزی هەرزان (ناجێگیر)', 'price': 800, 'id': 0}
+    ]
+}
     'instagram': [
         {'name': '👥 فۆڵۆوەرزی ئینستاگرام جێگیر', 'price': 2000, 'id': 0},
         {'name': '❤️ ڵایکی ئینستاگرام خێرا', 'price': 1000, 'id': 0}
